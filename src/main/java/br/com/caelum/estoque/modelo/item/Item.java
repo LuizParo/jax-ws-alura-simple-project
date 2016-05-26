@@ -1,11 +1,16 @@
 package br.com.caelum.estoque.modelo.item;
 
+import javax.xml.bind.annotation.XmlElement;
 
 public class Item {
 
+    @XmlElement(required = true)
 	private String codigo;
+    @XmlElement(required = true)
 	private String nome;
+    @XmlElement(required = true)
 	private String tipo;
+    @XmlElement(required = true)
 	private int quantidade;
 
 	Item() {
