@@ -13,10 +13,25 @@
   <message name="todosOsItensResponse">
     <part name="parameters" element="tns:itens"/>
   </message>
+  <message name="cadastraItem">
+    <part name="parameters" element="tns:cadastraItem"/>
+    <part name="tokenUsuario" element="tns:tokenUsuario"/>
+  </message>
+  <message name="cadastraItemResponse">
+    <part name="result" element="tns:cadastraItemResponse"/>
+  </message>
+  <message name="AutorizacaoFault">
+    <part name="fault" element="tns:AutorizacaoFault"/>
+  </message>
   <portType name="EstoqueWS">
     <operation name="todosOsItens">
       <input wsam:Action="http://ws.modelo.estoque.caelum.com.br/EstoqueWS/todosOsItensRequest" message="tns:todosOsItens"/>
       <output wsam:Action="http://ws.modelo.estoque.caelum.com.br/EstoqueWS/todosOsItensResponse" message="tns:todosOsItensResponse"/>
+    </operation>
+    <operation name="cadastraItem" parameterOrder="parameters tokenUsuario">
+      <input wsam:Action="http://ws.modelo.estoque.caelum.com.br/EstoqueWS/cadastraItemRequest" message="tns:cadastraItem"/>
+      <output wsam:Action="http://ws.modelo.estoque.caelum.com.br/EstoqueWS/cadastraItemResponse" message="tns:cadastraItemResponse"/>
+      <fault message="tns:AutorizacaoFault" name="AutorizacaoFault" wsam:Action="http://ws.modelo.estoque.caelum.com.br/EstoqueWS/cadastraItem/Fault/AutorizacaoException"/>
     </operation>
   </portType>
   <binding name="EstoqueWSPortBinding" type="tns:EstoqueWS">
@@ -30,6 +45,19 @@
         <soap:body use="literal"/>
       </output>
     </operation>
+    <operation name="cadastraItem">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal" parts="parameters"/>
+        <soap:header message="tns:cadastraItem" part="tokenUsuario" use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+      <fault name="AutorizacaoFault">
+        <soap:fault name="AutorizacaoFault" use="literal"/>
+      </fault>
+    </operation>
   </binding>
   <service name="EstoqueWSService">
     <port name="EstoqueWSPort" binding="tns:EstoqueWSPortBinding">
@@ -38,9 +66,38 @@
   </service>
 </definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/estoquews?xsd=1</con:url><con:content><![CDATA[<!--Published by JAX-WS RI (http://jax-ws.java.net). RI's version is JAX-WS RI 2.2.9-b130926.1035 svn-revision#5f6196f2b90e9460065a4c2f4e30e065b245e51e.-->
 <xs:schema version="1.0" targetNamespace="http://ws.modelo.estoque.caelum.com.br/" xmlns:tns="http://ws.modelo.estoque.caelum.com.br/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="AutorizacaoFault" nillable="true" type="xs:string"/>
+  <xs:element name="cadastraItem" type="tns:cadastraItem"/>
+  <xs:element name="cadastraItemResponse" type="tns:cadastraItemResponse"/>
   <xs:element name="filtros" type="tns:filtros"/>
+  <xs:element name="item" type="tns:item"/>
   <xs:element name="itens" type="tns:itens"/>
   <xs:element name="listaItens" type="tns:listaItens"/>
+  <xs:element name="tokenUsuario" type="tns:tokenUsuario"/>
+  <xs:complexType name="cadastraItem">
+    <xs:sequence>
+      <xs:element name="item" type="tns:item" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="item">
+    <xs:sequence>
+      <xs:element name="codigo" type="xs:string"/>
+      <xs:element name="nome" type="xs:string"/>
+      <xs:element name="tipo" type="xs:string"/>
+      <xs:element name="quantidade" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="tokenUsuario">
+    <xs:sequence>
+      <xs:element name="token" type="xs:string"/>
+      <xs:element name="dataValidade" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cadastraItemResponse">
+    <xs:sequence>
+      <xs:element name="item" type="tns:item" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="listaItens">
     <xs:sequence>
       <xs:element name="filtros" type="tns:filtros" minOccurs="0"/>
@@ -60,14 +117,6 @@
   <xs:complexType name="itens">
     <xs:sequence>
       <xs:element name="item" type="tns:item" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="item">
-    <xs:sequence>
-      <xs:element name="codigo" type="xs:string" minOccurs="0"/>
-      <xs:element name="nome" type="xs:string" minOccurs="0"/>
-      <xs:element name="quantidade" type="xs:int"/>
-      <xs:element name="tipo" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:simpleType name="tipoItem">
@@ -90,4 +139,27 @@
          </filtros>
       </ws:listaItens>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://ws.modelo.estoque.caelum.com.br/EstoqueWS/todosOsItensRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/></con:soapui-project>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://ws.modelo.estoque.caelum.com.br/EstoqueWS/todosOsItensRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="808131f4-20b4-4293-a4ea-86b3566e3dc5" isOneWay="false" action="" name="cadastraItem" bindingOperationName="cadastraItem" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="d9c41103-0779-4576-87af-c146fb3c966c" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/estoquews</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.modelo.estoque.caelum.com.br/">\r
+   <soapenv:Header>\r
+      <ws:tokenUsuario>\r
+         <!--Optional:-->\r
+         <dataValidade>31/12/2015</dataValidade>\r
+         <!--Optional:-->\r
+         <token>AAA</token>\r
+      </ws:tokenUsuario>\r
+   </soapenv:Header>\r
+   <soapenv:Body>\r
+      <ws:cadastraItem>\r
+         <!--Optional:-->\r
+         <item>\r
+            <!--Optional:-->\r
+            <codigo>MEA</codigo>\r
+            <!--Optional:-->\r
+            <nome>MEAN</nome>\r
+            <quantidade>5</quantidade>\r
+            <!--Optional:-->\r
+            <tipo>Livro</tipo>\r
+         </item>\r
+      </ws:cadastraItem>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://ws.modelo.estoque.caelum.com.br/EstoqueWS/cadastraItemRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
