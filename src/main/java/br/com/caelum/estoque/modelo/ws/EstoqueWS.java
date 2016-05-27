@@ -6,6 +6,9 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.Style;
+import javax.jws.soap.SOAPBinding.Use;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
@@ -19,6 +22,7 @@ import br.com.caelum.estoque.modelo.usuario.TokenDao;
 import br.com.caelum.estoque.modelo.usuario.TokenUsuario;
 
 @WebService
+@SOAPBinding(style = Style.DOCUMENT, use = Use.LITERAL)
 public class EstoqueWS {
     private ItemDao dao = new ItemDao();
     
